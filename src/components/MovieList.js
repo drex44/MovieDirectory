@@ -2,19 +2,27 @@ import React from "react";
 
 import { Q } from "@nozbe/watermelondb";
 import withObservables from "@nozbe/with-observables";
-import { List, ListItem, Body, Text } from "native-base";
 
-const MovieList = ({ movies }) => (
+import RawMovieItem from "./RawMovieItem";
+import { List } from "native-base";
+
+const MovieItem = withObservables(["movie"], ({ movie }) => ({
+  movie: movie.observe()
+}))(RawMovieItem);
+
+const MovieList = ({ movies, navigation }) => (
   <List>
     {movies.map(movie => (
-      <ListItem key={movie.id}>
-        <Body>
-          <Text>{movie.title}</Text>
-        </Body>
-      </ListItem>
+      <MovieItem
+        key={movie.id}
+        movie={movie}
+        countObservable={movie.reviews.observeCount()}
+        onPress={() => navigation.navigate("Movie", { movie })}
+      />
     ))}
   </List>
 );
+
 const enhance = withObservables(["search"], ({ database, search }) => ({
   movies: database.collections
     .get("movies")

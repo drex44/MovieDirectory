@@ -1,13 +1,27 @@
 import React, { Component } from "react";
 import { generateRecords } from "../models/generate";
 import { Alert } from "react-native";
-import { Container, Content, Button, Text } from "native-base";
+import {
+  View,
+  Container,
+  Content,
+  Button,
+  Text,
+  Form,
+  Item,
+  Input,
+  Label,
+  Body
+} from "native-base";
 
 import MovieList from "../components/MovieList";
+import styles from "../components/styles";
 
 export default class Root extends Component {
   state = {
-    isGenerating: false
+    isGenerating: false,
+    search: "",
+    isSearchFocused: false
   };
 
   generate = async () => {
@@ -17,24 +31,60 @@ export default class Root extends Component {
     this.setState({ isGenerating: false });
   };
 
+  addNewMovie = () => {
+    this.props.navigation.navigate("NewMovie");
+  };
+
+  handleTextChanges = v => this.setState({ search: v });
+
+  handleOnFocus = () => this.setState({ isSearchFocused: true });
+
+  handleOnBlur = () => this.setState({ isSearchFocused: false });
+
   render() {
-    const { isGenerating } = this.state;
+    const { search, isGenerating, isSearchFocused } = this.state;
     const { database, navigation } = this.props;
 
     return (
-      <Container>
+      <Container style={styles.container}>
         <Content>
-          <Button
-            bordered
-            full
-            onPress={this.generate}
-            style={{ marginTop: 5 }}
-          >
-            <Text>Generate Dummy records</Text>
-          </Button>
-
+          {!isSearchFocused && (
+            <View style={styles.marginContainer}>
+              <Button
+                bordered
+                full
+                onPress={this.generate}
+                style={{ marginTop: 5 }}
+              >
+                <Text>Generate Dummy records</Text>
+              </Button>
+              <Button
+                bordered
+                full
+                onPress={this.addNewMovie}
+                style={{ marginTop: 5 }}
+              >
+                <Text>Add new movie</Text>
+              </Button>
+              <Body />
+            </View>
+          )}
+          <Form>
+            <Item floatingLabel>
+              <Label>Search...</Label>
+              <Input
+                onFocus={this.handleOnFocus}
+                onBlur={this.handleOnBlur}
+                onChangeText={this.handleTextChanges}
+              />
+            </Item>
+          </Form>
           {!isGenerating && (
-            <MovieList database={database} search="" navigation={navigation} />
+            <MovieList
+              database={database}
+              search={search}
+              navigation={navigation}
+            />
           )}
         </Content>
       </Container>
