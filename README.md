@@ -25,7 +25,7 @@ npm run start:android
 
 ## Tutorial
 
-Full tutorial is available on SPBooks.
+Full tutorial is available on [SitePoint](https://www.sitepoint.com/create-an-offline-first-react-native-app-using-watermelondb/).
 
 ## Code structure
 
